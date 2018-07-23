@@ -13,67 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.iicanf.socket.config;
+package com.iicanf.config;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.Objects;
 import java.util.Properties;
 
 /**
  * @author minwoo.jung
  */
-public class FlinkConfiguration {
+@Component("flinkConfiguration")
+public class FlinkConfiguration implements InitializingBean {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private boolean flinkClusterEnable;
-    private String flinkClusterZookeeperAddress;
-    private int flinkClusterSessionTimeout;
-    private int flinkRetryInterval;
-    private int flinkClusterTcpPort;
-    private String flinkStreamExecutionEnvironment;
+    private String evironment;
+    @Autowired
+    private Properties properties;
 
-    private int flinkSourceFunctionParallel;
-
-    public boolean isFlinkClusterEnable() {
-        return flinkClusterEnable;
+    public String getEvironment() {
+        return evironment;
     }
-
-    public String getFlinkClusterZookeeperAddress() {
-        return flinkClusterZookeeperAddress;
-    }
-
-    public int getFlinkClusterTcpPort() {
-        return flinkClusterTcpPort;
-    }
-
-    public int getFlinkClusterSessionTimeout() {
-        return flinkClusterSessionTimeout;
-    }
-
-    public int getFlinkRetryInterval() {
-        return flinkRetryInterval;
-    }
-
-    public int getFlinkSourceFunctionParallel() {
-        return flinkSourceFunctionParallel;
-    }
-
-    public boolean isLocalforFlinkStreamExecutionEnvironment() {
-        return "local".equals(flinkStreamExecutionEnvironment) ? true : false;
-    }
-
 
     protected void readPropertyValues(Properties properties) {
-        logger.info("pinpoint-flink.properties read.");
+        logger.info("flink.properties read.");
 
-        this.flinkClusterEnable = readBoolean(properties, "flink.cluster.enable");
-        this.flinkClusterZookeeperAddress = readString(properties, "flink.cluster.zookeeper.address", "");
-        this.flinkClusterSessionTimeout = readInt(properties, "flink.cluster.zookeeper.sessiontimeout", -1);
-        this.flinkRetryInterval = readInt(properties, "flink.cluster.zookeeper.retry.interval", 60000);
-        this.flinkClusterTcpPort = readInt(properties, "flink.cluster.tcp.port", 19994);
-        this.flinkStreamExecutionEnvironment = readString(properties, "flink.StreamExecutionEnvironment", "server");
-        this.flinkSourceFunctionParallel = readInt(properties, "flink.sourceFunction.Parallel", 1);
+        this.evironment = readString(properties, "envirment", GlobolEnum.SERVER_ENVIRMENT);
     }
 
     private String readString(Properties properties, String propertyName, String defaultValue) {
@@ -113,5 +83,11 @@ public class FlinkConfiguration {
             logger.info("{}={}", propertyName, result);
         }
         return result;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        final Properties properties = Objects.requireNonNull(this.properties, "properties must not be null");
+        readPropertyValues(properties);
     }
 }

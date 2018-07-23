@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.iicanf.socket;
+package com.iicanf;
 
-import com.iicanf.socket.config.FlinkConfiguration;
-import org.apache.flink.streaming.api.datastream.DataStreamSource;
+import com.iicanf.config.GlobolEnum;
+import com.iicanf.config.FlinkConfiguration;
 import org.apache.flink.streaming.api.environment.LocalStreamEnvironment;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.streaming.api.functions.source.SourceFunction.SourceContext;
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -40,7 +38,7 @@ public class Bootstrap {
         String[] SPRING_CONFIG_XML = new String[]{"applicationContext-flink.xml", "applicationContext-cache.xml"};
         applicationContext = new ClassPathXmlApplicationContext(SPRING_CONFIG_XML);
         flinkConfiguration = applicationContext.getBean("flinkConfiguration", FlinkConfiguration.class);
-
+        //boot
     }
 
     public static Bootstrap getInstance() {
@@ -52,17 +50,12 @@ public class Bootstrap {
     }
 
     public StreamExecutionEnvironment createStreamExecutionEnvironment() {
-        if (flinkConfiguration.isLocalforFlinkStreamExecutionEnvironment()) {
+        if (GlobolEnum.LOCAL_ENVIRMENT.equals(flinkConfiguration.getEvironment())) {
             LocalStreamEnvironment localEnvironment = StreamExecutionEnvironment.createLocalEnvironment();
             localEnvironment.setParallelism(1);
             return localEnvironment;
         } else {
             return StreamExecutionEnvironment.getExecutionEnvironment();
         }
-    }
-
-    public void setSourceFunctionParallel(DataStreamSource rawData) {
-        int parallel = flinkConfiguration.getFlinkSourceFunctionParallel();
-        rawData.setParallelism(parallel);
     }
 }
