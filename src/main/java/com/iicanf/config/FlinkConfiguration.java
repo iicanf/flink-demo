@@ -22,6 +22,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -33,7 +34,8 @@ public class FlinkConfiguration implements InitializingBean {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private String evironment;
-    @Autowired
+
+    @Resource(name = "pinpoint_flink_properties")
     private Properties properties;
 
     public String getEvironment() {

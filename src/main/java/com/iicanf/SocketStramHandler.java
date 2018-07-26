@@ -1,5 +1,6 @@
 package com.iicanf;
 
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,10 +14,10 @@ public class SocketStramHandler {
     public void start() throws Exception {
         logger.info("start job");
         final Bootstrap bootstrap = Bootstrap.getInstance();
-
+//
         logger.info("start job success");
 
-//        StreamExecutionEnvironment env = bootstrap.createStreamExecutionEnvironment();
+        StreamExecutionEnvironment env = bootstrap.createStreamExecutionEnvironment();
 
 //        DataStream<Tuple2<String, Integer>> dataStream = env
 //                .socketTextStream("localhost", 9999)
